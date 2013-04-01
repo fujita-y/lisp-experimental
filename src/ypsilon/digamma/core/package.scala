@@ -4,10 +4,12 @@ package object core {
   import scala.util.parsing.combinator._
 
   class LispParsers extends JavaTokenParsers {
-    lazy val expr: Parser[Any] = atom | list | quot
-    lazy val atom: Parser[Any] = ident | wholeNumber | stringLiteral
+    lazy val expr: Parser[Any] = symbol | number | string | list | quote
+    lazy val number: Parser[Any] = wholeNumber ^^ (s => s.toInt)
+    lazy val symbol: Parser[Any] = ident ^^ (s => Symbol(s))
+    lazy val string: Parser[Any] = stringLiteral ^^ (s => s.substring(1, s.length() - 1))
     lazy val list: Parser[Any] = "(" ~> rep(expr) <~ ")"
-    lazy val quot: Parser[Any] = ("'" ~> expr) ^^ (List('quote, _))
+    lazy val quote: Parser[Any] = ("'" ~> expr) ^^ (List('quote, _))
   }
 
   def read(s: String) = {
@@ -25,6 +27,7 @@ package object core {
     case List('quote, x) => "'" + display(x)
     case (x: ::[_]) => "(" + x.map(display).mkString(" ") + ")"
     case (x: String) => x
+    case (x: Symbol) => x.toString.substring(1)
     case _ => datum.toString
   }
 
