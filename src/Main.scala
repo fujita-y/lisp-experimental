@@ -1,11 +1,10 @@
+import ypsilon.digamma.core._
+
 object Main {
-
-  def foo(x: Array[String]) = x.foldLeft("") {
-    (a, b) => a + b
-  }
-
   def main(args: Array[String]) {
-    System.out.println("Hello, Scala World!")
-    println("concat arguments = " + foo(args))
+    System.out.println("Hello Ypsilon Digamma!")
+    val lst = read("(1 2 (3 hello (\"world\" 5) 6) 'symbol '() ())")
+    println(cadr(lst))
+    println(display(lst))
   }
 }
