@@ -19,34 +19,36 @@ package object core {
     else throw new IllegalArgumentException(res.toString)
   }
 
-  def display(datum: Any): String = datum match {
+  def display(e: Any): String = e match {
     case Nil => "()"
     case List('quote, x) => "'" + display(x)
-    case (x: ::[_]) => "(" + x.map(display).mkString(" ") + ")"
-    case (x: String) => x
-    case (x: Symbol) => x.toString.tail
-    case _ => datum.toString
+    case x: ::[_] => "(" + x.map(display).mkString(" ") + ")"
+    case x: String => x
+    case x: Symbol => x.toString.tail
+    case _ => e.toString
   }
 
-  def write(datum: Any): String = datum match {
+  def write(e: Any): String = e match {
     case Nil => "()"
-    case (x: ::[_]) => "(" + x.map(write).mkString(" ") + ")"
-    case (x: String) => "\"" + x + "\""
-    case (x: Symbol) => x.toString.tail
-    case _ => datum.toString
+    case x: ::[_] => "(" + x.map(write).mkString(" ") + ")"
+    case x: String => "\"" + x + "\""
+    case x: Symbol => x.toString.tail
+    case _ => e.toString
   }
 
-  def car(datum: Any) = datum match {
-    case lst: List[Any] => lst.head
-    case _ => throw new IllegalArgumentException("expected pair, but got " + datum.getClass())
+  def cons(e1: Any, e2: Any) = e2 match {
+    case x: List[Any] => e1::x
+    case _ => throw new RuntimeException("const expected pair for second argument, but got " + e2.getClass())
   }
 
-  def cdr(datum: Any) = datum match {
-    case lst: List[Any] => lst.tail
-    case _ => throw new IllegalArgumentException("expected pair, but got " + datum.getClass())
+  def car(e: Any) = e match {
+  case x: List[Any] => x.head
+  case _ => throw new RuntimeException("car expected pair, but got " + e.getClass())
   }
 
-  def caar(datum: Any) = car(car(datum))
-  def cadr(datum: Any) = car(cdr(datum))
-  def cddr(datum: Any) = cdr(cdr(datum))
+  def cdr(e: Any) = e match {
+    case x: List[Any] => x.tail
+    case _ => throw new RuntimeException("cdr expected pair, but got " + e.getClass())
+  }
+
 }
